@@ -5,11 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        //全情報取得
+        name = "getAllUsers",
+        query = "SELECT u FROM Users AS u ORDER BY u.id DESC"
+    )
+})
 @Table(name = "users")
-public class User {
+public class Users {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,3 +91,4 @@ public class User {
 
 
 }
+

@@ -1,7 +1,6 @@
-package controllers.toppage;
+package controllers.users;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -14,16 +13,16 @@ import models.Users;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class NewServlet
  */
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet("/users/new")
+public class NewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IndexServlet() {
+    public NewServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,14 +31,33 @@ public class IndexServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        EntityManager em = DBUtil.createEntityManager();
 
-        //全権取得したデータをリスト形式で取得
-        List<Users>users = em.createNamedQuery("getAllUsers", Users.class).getResultList();
-        response.getWriter().append(Integer.valueOf(users.size()).toString());
+        EntityManager em = DBUtil.createEntityManager();
+        Users u = new Users();
+
+        String username ="test";
+        u.setUsername(username);
+
+        String email ="test";
+        u.setEmail(email);
+
+        String password ="test";
+        u.setPassword(password);
+
+        int admin_flag =1;
+        u.setAdmin_flag(admin_flag);
+
+        int delete_flag =0;
+        u.setDelete_flag(delete_flag);
+
+        em.getTransaction().begin();
+        em.persist(u);
+        em.getTransaction().commit();
+
+        // 自動採番されたIDの値を表示
+        response.getWriter().append(Integer.valueOf(u.getId()).toString());
 
         em.close();
+     }
 
-}
 }
