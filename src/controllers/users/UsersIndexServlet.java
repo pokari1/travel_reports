@@ -1,4 +1,4 @@
-package controllers.toppage;
+package controllers.users;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,16 +15,16 @@ import models.Users;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class UsersIndexServlet
  */
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet("/users/index")
+public class UsersIndexServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IndexServlet() {
+    public UsersIndexServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,17 +33,29 @@ public class IndexServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         EntityManager em = DBUtil.createEntityManager();
 
-        //全権取得したデータをリスト形式で取得
-        List<Users> users = em.createNamedQuery("getAllUsers", Users.class).getResultList();
+        int page = 1;
+        try{
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch(NumberFormatException e) { }
+        List<Users> users = em.createNamedQuery("getAllUsers", Users.class)
+                                     .setFirstResult(15 * (page - 1))
+                                     .setMaxResults(15)
+                                     .getResultList();
+
+        long users_count = (long)em.createNamedQuery("getUsersCount", Long.class)
+                                       .getSingleResult();
 
         em.close();
 
-        //リクエストスコープにセット
         request.setAttribute("users", users);
-
+        request.setAttribute("users_count", users_count);
+        request.setAttribute("page", page);
+        if(request.getSession().getAttribute("flush") != null) {
+            request.setAttribute("flush", request.getSession().getAttribute("flush"));
+            request.getSession().removeAttribute("flush");
+        }
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/users/index.jsp");
         rd.forward(request, response);

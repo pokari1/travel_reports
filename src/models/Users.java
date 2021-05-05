@@ -12,11 +12,28 @@ import javax.persistence.Table;
 @Entity
 @NamedQueries({
     @NamedQuery(
-        //全情報取得
-        name = "getAllUsers",
-        query = "SELECT u FROM Users AS u ORDER BY u.id DESC"
-    )
-})
+            //全情報取得
+            name = "getAllUsers",
+            query = "SELECT u FROM Users AS u ORDER BY u.id DESC"
+        ),
+    @NamedQuery(
+            //ユーザー数カウント
+            name = "getUsersCount",
+            query = "SELECT COUNT(u) FROM Users AS u"
+        ),
+
+    @NamedQuery(
+            //  email　重複チェック
+            name = "checkRegisteredEmail",
+            query = "SELECT COUNT(u) FROM Users AS u WHERE u.email = :email"
+        ),
+
+    @NamedQuery(
+            name = "checkLoginEmailAndPassword",
+            query = "SELECT u FROM Users AS u WHERE u.delete_flag = 0 AND u.email = :email AND u.password = :pass"
+        )
+    })
+
 @Table(name = "users")
 public class Users {
     @Id
@@ -27,7 +44,7 @@ public class Users {
     @Column(name = "username", length = 255, nullable = false)
     private String username;
 
-    @Column(name = "email", length = 255, nullable = false)
+    @Column(name = "email", length = 255, nullable = false,unique = true)
     private String email;
 
     @Column(name = "password", length = 64, nullable = false)
