@@ -29,4 +29,4 @@
 <br /><br />--%>
 
 <input type="hidden" name="_token" value="${_token}" />
-<button type="submit">新規登録</button>
+<button type="submit">登録する</button>
