@@ -1,7 +1,6 @@
-package controllers.toppage;
+package controllers.reports;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -12,44 +11,42 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Report;
+import models.Users;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class ReportsEditServlet
  */
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet("/reports/edit")
+public class ReportsEditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IndexServlet() {
+    public ReportsEditServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         EntityManager em = DBUtil.createEntityManager();
 
-        Report random =em.createNamedQuery("getImageRandom", Report.class).getSingleResult();
-
-        //全件取得したデータをリスト形式で取得
-        List<Report> reports = em.createNamedQuery("getAllReports", Report.class).getResultList();
-
+        Report r = em.find(Report.class, Integer.parseInt(request.getParameter("id")));
 
         em.close();
 
-        //リクエストスコープにセット
-        request.setAttribute("random", random);
-       request.setAttribute("reports", reports);
+        Users login_users = (Users)request.getSession().getAttribute("login_users");
+        if(r != null && login_users.getId() == r.getUsers().getId()) {
+            request.setAttribute("report", r);
+            request.setAttribute("_token", request.getSession().getId());
+            request.getSession().setAttribute("report_id", r.getId());
+        }
 
-
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/toppage/index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/reports/edit.jsp");
         rd.forward(request, response);
     }
+
 }

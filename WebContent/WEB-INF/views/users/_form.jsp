@@ -9,6 +9,7 @@
 
     </div>
 </c:if>
+
 <label for="username">ユーザー名</label><br />
 <input type="text" name="username" value="${users.username}" />
 <br /><br />

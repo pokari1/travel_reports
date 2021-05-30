@@ -19,7 +19,7 @@ import utils.EncryptUtil;
 /**
  * Servlet implementation class UsersCreteServlet
  */
-@WebServlet("/users/create")
+@WebServlet("/create")
 public class UsersCreateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class UsersCreateServlet extends HttpServlet {
                     request.getSession().setAttribute("flush", "登録が完了しました。");
                     em.close();
 
-                    response.sendRedirect(request.getContextPath() + "/users/index");
+                    response.sendRedirect(request.getContextPath() + "/mypage/index");
                 }
             }
         }

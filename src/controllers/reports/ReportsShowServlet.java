@@ -1,8 +1,8 @@
-package controllers.users;
-
+package controllers.reports;
 
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,19 +10,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import models.Users;
+import models.Report;
+import utils.DBUtil;
 
 /**
- * Servlet implementation class EmployeesNewServlet
+ * Servlet implementation class ReportsShowServlet
  */
-@WebServlet("/new")
-public class UsersNewServlet extends HttpServlet {
+@WebServlet("/show")
+public class ReportsShowServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public UsersNewServlet() {
+    public ReportsShowServlet() {
         super();
     }
 
@@ -30,10 +31,21 @@ public class UsersNewServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("_token", request.getSession().getId());
-        request.setAttribute("users", new Users());
+        EntityManager em = DBUtil.createEntityManager();
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/users/new.jsp");
+
+        Report r = em.find(Report.class, Integer.parseInt(request.getParameter("id")));
+
+
+
+        em.close();
+
+
+        request.setAttribute("report", r);
+        request.setAttribute("_token", request.getSession().getId());
+        request.setAttribute("image",r);
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/mypage/show.jsp");
         rd.forward(request, response);
     }
 
